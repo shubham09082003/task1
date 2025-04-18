@@ -5,6 +5,16 @@ module.exports = {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  safelist: [
+    'bg-background',
+    'text-foreground',
+    'border-border',
+    'bg-card',
+    'text-card-foreground',
+    'bg-popover',
+    'text-popover-foreground',
+    // Add more if you need
+  ],
   theme: {
     container: {
       center: true,
@@ -71,4 +81,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-} 
+}

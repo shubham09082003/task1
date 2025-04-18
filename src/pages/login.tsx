@@ -2,16 +2,27 @@ import { useState } from "react"
 import { Button } from "../components/ui/button"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import { useAuth } from "../context/auth-context"
+import axios from "axios"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const navigate = useNavigate()
+  const { login } = useAuth()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle login logic here
-    console.log("Login attempt with:", { email, password })
+    // In a real app, you would validate credentials with your backend
+    //  // Replace with actual token from your backend
+    const response = await axios.post("http://localhost:3000/login",{
+      email,password
+    });
+    const token = (response.data as {token: string}).token;
+    localStorage.setItem("token", token);
+    login(token);
+    navigate("/dashboard")
   }
 
   return (

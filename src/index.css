@@ -62,26 +62,28 @@
     --input: 240 3.7% 15.9%;
     --ring: 240 4.9% 83.9%;
   }
-}
 
-* {
-  @apply border-border;
-}
+  * {
+    border-color: hsl(var(--border));
+  }
 
-html {
-  @apply antialiased;
-}
+  html {
+    @apply antialiased;
+  }
 
-body {
-  @apply min-h-screen bg-background text-foreground;
-  transition: background-color 0.3s ease;
-}
+  body {
+    @apply min-h-screen;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    transition: background-color 0.3s ease;
+  }
 
-.dark body {
-  background: linear-gradient(to bottom, hsl(var(--background)), hsl(240 10% 2%));
-}
+  .dark body {
+    background: linear-gradient(to bottom, hsl(var(--background)), hsl(240 10% 2%));
+  }
 
-/* Ensure theme transitions are smooth */
-*, *::before, *::after {
-  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  /* Ensure theme transitions are smooth */
+  *, *::before, *::after {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+  }
 }
