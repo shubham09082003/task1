@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Button } from "./ui/button"
 import { Input } from "./ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { supabase } from '../lib/supabaseClient'
 import { UserAuth } from "../context/AuthContext"
 import CreateTodoModal from './CreateTodoModal'
@@ -107,33 +108,34 @@ export default function Todo() {
         />
         <div className="flex items-center gap-2">
           <span className="text-sm">Status</span>
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="bg-[#1E1E1E] border-0 rounded-md px-2 py-1 text-sm"
-          >
-            <option value="all">All</option>
-            <option value="Todo">Todo</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
-            <option value="Backlog">Backlog</option>
-            <option value="Cancelled">Cancelled</option>
-          </select>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[180px] bg-[#1E1E1E] border-0">
+              <SelectValue placeholder="Select status" />
+            </SelectTrigger>
+            <SelectContent className="bg-black text-white">
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="Todo">Todo</SelectItem>
+              <SelectItem value="In Progress">In Progress</SelectItem>
+              <SelectItem value="Done">Done</SelectItem>
+              <SelectItem value="Backlog">Backlog</SelectItem>
+              <SelectItem value="Cancelled">Cancelled</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm">Priority</span>
-          <select
-            value={priorityFilter}
-            onChange={(e) => setPriorityFilter(e.target.value)}
-            className="bg-[#1E1E1E] border-0 rounded-md px-2 py-1 text-sm"
-          >
-            <option value="all">All</option>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-          </select>
+          <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+            <SelectTrigger className="w-[180px] bg-[#1E1E1E] border-0">
+              <SelectValue placeholder="Select priority" />
+            </SelectTrigger>
+            <SelectContent className="bg-black text-white">
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="Low">Low</SelectItem>
+              <SelectItem value="Medium">Medium</SelectItem>
+              <SelectItem value="High">High</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
-
       </div>
 
       <div className="overflow-x-auto">
@@ -174,17 +176,18 @@ export default function Todo() {
                       todo.status === 'Cancelled' ? 'bg-red-500' :
                       'bg-blue-500'
                     }`}></span>
-                    <select
-                      value={todo.status}
-                      onChange={(e) => updateTodoStatus(todo.id, e.target.value)}
-                      className="bg-transparent border-0 text-sm text-gray-300"
-                    >
-                      <option className='bg-black' value="Todo">Todo</option>
-                      <option className='bg-black' value="In Progress">In Progress</option>
-                      <option className='bg-black' value="Done">Done</option>
-                      <option className='bg-black' value="Backlog">Backlog</option>
-                      <option className='bg-black' value="Cancelled">Cancelled</option>
-                    </select>
+                    <Select value={todo.status} onValueChange={(value) => updateTodoStatus(todo.id, value)}>
+                      <SelectTrigger className="w-[180px] bg-transparent border-0">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-black text-white">
+                        <SelectItem value="Todo">Todo</SelectItem>
+                        <SelectItem value="In Progress">In Progress</SelectItem>
+                        <SelectItem value="Done">Done</SelectItem>
+                        <SelectItem value="Backlog">Backlog</SelectItem>
+                        <SelectItem value="Cancelled">Cancelled</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </td>
                 <td className="py-3">

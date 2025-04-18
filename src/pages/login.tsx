@@ -38,7 +38,7 @@ export default function LoginPage() {
           </h1>
           <p className="text-sm text-muted-foreground">
             Don't have an account?{" "}
-            <Link to="/signup" className="text-primary underline-offset-4 hover:underline">
+            <Link to="/signup" className="underline-offset-4 hover:underline text-gray-600">
               Sign up
             </Link>
           </p>
@@ -53,7 +53,7 @@ export default function LoginPage() {
               placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full"
+              className="w-full bg-transparent"
             />
           </div>
 
@@ -64,7 +64,8 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full"
+              className="w-full bg-transparent"
+              minLength={6}
             />
           </div>
 
@@ -82,7 +83,7 @@ export default function LoginPage() {
 
             <Link
               to="/forgot-password"
-              className="text-sm text-primary hover:underline underline-offset-4"
+              className="text-sm text-gray-600 hover:underline underline-offset-4"
             >
               Forgot your password?
             </Link>
@@ -101,7 +102,7 @@ export default function LoginPage() {
           <Button
             variant="outline"
             type="button"
-            className="w-full"
+            className="w-full bg-transparent"
             onClick={() => {
               // Handle GitHub login
               console.log("GitHub login")

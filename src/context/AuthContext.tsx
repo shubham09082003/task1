@@ -3,15 +3,17 @@ import { supabase } from "../lib/supabaseClient";
 import { Session } from "@supabase/supabase-js";
 
 const AuthContext = createContext<{
+    loading : Boolean ,
     session: Session | null;
     signedUpNewUser: (email: string, password: string) => Promise<{success: boolean; data?: any; error?: any}>;
-    signOut: () => void;
+    signOut: () => Promise<void>;
     signInUser : (email : string , password : string) => Promise<{success : boolean ; data? : any ; error? : any}>;
-}>({session: null, signedUpNewUser: async () => ({success: false}), signOut: () => {} , signInUser : async () => ({success : true})});
+}>({session: null, signedUpNewUser: async () => ({success: false}), signOut: async () => {} , signInUser : async () => ({success : true}), loading : true});
 
 
 export const AuthContextProvider = ({children}: {children: React.ReactNode}) => {
     const [session , setSession] = useState<Session | null>(null);
+    const [loading , setLoading] = useState(true)
 
     const signedUpNewUser = async (email: string, password: string) => {
         const { data, error } = await supabase.auth.signUp({
@@ -44,15 +46,22 @@ export const AuthContextProvider = ({children}: {children: React.ReactNode}) => 
         }
     }
 
-    useEffect(() => {
-        supabase.auth.getSession().then(({data : {session}}) => {
+    useEffect( () => {
+        const getSession = async () => {
+            const {data : {session}} = await supabase.auth.getSession();
+            setSession(session)
+            setLoading(false)
+        }
+        getSession();
+
+        const { data : subscription} = supabase.auth.onAuthStateChange((_event,session) =>{
             setSession(session);
         });
 
-        supabase.auth.onAuthStateChange((_event , session)=> {
-            setSession(session);
-        });
-    },[])
+        return () =>{
+            (subscription as any).unsubscribe;
+        }            
+    }, []);
 
     const signOut = async () => {
         const { error } = await supabase.auth.signOut();
@@ -62,7 +71,7 @@ export const AuthContextProvider = ({children}: {children: React.ReactNode}) => 
     }   
 
     return(
-        <AuthContext.Provider value={{session , signedUpNewUser , signOut, signInUser}}>{children}</AuthContext.Provider>
+        <AuthContext.Provider value={{session , signedUpNewUser , signOut, signInUser, loading}}>{children}</AuthContext.Provider>
     )
 }
 
