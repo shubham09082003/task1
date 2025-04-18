@@ -3,26 +3,30 @@ import { Button } from "../components/ui/button"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { Link, useNavigate } from "react-router-dom"
-import { useAuth } from "../context/auth-context"
-import axios from "axios"
+import { UserAuth } from "../context/AuthContext"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const navigate = useNavigate()
-  const { login } = useAuth()
+
+  const {signInUser} = UserAuth();
+
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     // In a real app, you would validate credentials with your backend
     //  // Replace with actual token from your backend
-    const response = await axios.post("http://localhost:3000/login",{
-      email,password
-    });
-    const token = (response.data as {token: string}).token;
-    localStorage.setItem("token", token);
-    login(token);
-    navigate("/dashboard")
+    try{
+      const result = await signInUser(email,password);
+      if(result.success){
+        navigate("/dashboard");
+      }
+    }
+    catch(err){
+      console.log(err)
+    }
   }
 
   return (

@@ -3,21 +3,26 @@ import { Button } from "../components/ui/button"
 import { Input } from "../components/ui/input"
 import { Label } from "../components/ui/label"
 import { Link, useNavigate } from "react-router-dom"
-import axios from "axios"
+import { UserAuth } from "../context/AuthContext"
 
 export default function SignUpPage() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
+  const navigate = useNavigate();
+  const { session , signedUpNewUser } = UserAuth();
 
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault()
-    // Handle signup logic here
-    await axios.post("http://localhost:3000/signup",{
-      email,password
-    });
-    navigate("/login");
+    // Handle signup logic here 
+    try{
+      const result = await signedUpNewUser(email,password);
+      if(result.success){
+        navigate("/login");
+      }
+    }catch(err){
+      console.error("error occured");
+    }
   }
 
   return (
