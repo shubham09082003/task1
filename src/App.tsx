@@ -3,6 +3,7 @@ import LoginPage from "./pages/login"
 import SignUpPage from "./pages/signup"
 import DashboardPage from "./pages/dashboard"
 import { ProtectedRoute } from "./components/protected-route"
+import FileUploadModal from "./components/FileUploadModal"
 
 function App() {
   return (
@@ -15,11 +16,18 @@ function App() {
               path="/dashboard" 
               element={
                 <ProtectedRoute>
+
                   <DashboardPage />
                 </ProtectedRoute>
               } 
             />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/fileupload" element={
+              <ProtectedRoute> 
+                <FileUploadModal />
+              </ProtectedRoute>
+              } 
+              />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} /> 
           </Routes>
         </Router>
       </div>
