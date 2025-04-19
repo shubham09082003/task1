@@ -4,6 +4,10 @@ import { Input } from "./ui/input";
 import { UserAuth } from "../context/AuthContext";
 import { supabase } from "../lib/supabaseClient";
 import { useNavigate } from "react-router-dom";
+import * as pdfjsLib from "pdfjs-dist";
+import mammoth from "mammoth";
+
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js`;
 
 function FileUploadModal() {
   const [files, setFiles] = useState<File[]>([]);
@@ -11,6 +15,14 @@ function FileUploadModal() {
   const navigate = useNavigate();
   const userId = session?.user.id;
   const [isUploading, setIsUploading] = useState(false);
+  const [textContent, setTextContent] = useState<string>("");
+
+  useEffect (() => {
+    if (!session) {
+      navigate("/login");
+    }
+  }, [session, navigate]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files;
     if (file) {
@@ -18,20 +30,30 @@ function FileUploadModal() {
     }
   };
 
-  useEffect(() => {
-    if (!session) {
-      navigate("/login");
-    }
-  }, [session, navigate]);
+  const convertPdfToText = async (file: File) => {
+    const reader = new FileReader();
+    reader.onload = async function () {
+      const typedarray = new Uint8Array(this.result as ArrayBuffer);
+      const pdf = await pdfjsLib.getDocument(typedarray).promise;
+      let text = "";
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        text += content.items.map((item: any) => item.str).join(" ") + " ";
+      }
+      setTextContent(text);
+    };
+    reader.readAsArrayBuffer(file);
+  };
 
-  const handleSignOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    try {
-      await signOut();
-      navigate("/login");
-    } catch (err) {
-      console.log(err);
-    }
+  const convertDocxToText = async (file: File) => {
+    const reader = new FileReader();
+    reader.onload = async function () {
+      const arrayBuffer = this.result as ArrayBuffer;
+      const result = await mammoth.extractRawText({ arrayBuffer });
+      setTextContent(result.value);
+    };
+    reader.readAsArrayBuffer(file);
   };
 
   const handleUpload = () => {
@@ -42,10 +64,14 @@ function FileUploadModal() {
           .from("files")
           .upload(`${userId}/${file.name}`, file);
         if (error) {
-          console.log(error);
+          alert(error.message);
         }
         if (data) {
-          console.log(data);
+          if (file.type === "application/pdf") {
+            await convertPdfToText(file);
+          } else if (file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
+            await convertDocxToText(file);
+          }
         }
       }
     };
@@ -55,6 +81,17 @@ function FileUploadModal() {
       setIsUploading(false);
     });
   };
+
+  const handleSignOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      await signOut();
+      navigate("/login");
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
 
   if (session === null) return null;
 
@@ -76,6 +113,12 @@ function FileUploadModal() {
         <Button className="mt-3" onClick={handleUpload} disabled={isUploading}>
           {isUploading ? "Uploading..." : "Upload"}
         </Button>
+        {textContent && (
+          <div className="mt-4 p-4 border rounded">
+            <h2 className="text-xl font-bold">Extracted Text</h2>
+            <p>{textContent}</p>
+          </div>
+        )}
       </div>
     </div>
   );
