@@ -23,6 +23,9 @@ export default function LoginPage() {
       if(result.success){
         navigate("/dashboard");
       }
+      if(!result.success){
+        alert(result.error);
+      }
     }
     catch(err){
       console.log(err)

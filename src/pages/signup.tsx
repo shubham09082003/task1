@@ -20,6 +20,9 @@ export default function SignUpPage() {
       if(result.success){
         navigate("/login");
       }
+      if(!result.success){
+        alert(result.error.message);
+      }
     }catch(err){
       console.error("error occured");
     }
