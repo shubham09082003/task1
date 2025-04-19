@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { supabase } from '../lib/supabaseClient'
 import { UserAuth } from "../context/AuthContext"
 import CreateTodoModal from './CreateTodoModal'
-
+import { useNavigate } from 'react-router-dom'
 interface Todo {
   id: number
   title: string
@@ -22,6 +22,7 @@ export default function Todo() {
   const [priorityFilter, setPriorityFilter] = useState('all')
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const { session } = UserAuth()
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchTodos()
@@ -92,9 +93,14 @@ export default function Todo() {
             <h2 className="text-2xl font-bold">Welcome back!</h2>
             <p className="text-gray-400">Here's a list of your tasks for this month!</p>
           </div>
-          <Button onClick={() => setIsCreateModalOpen(true)}>
-            Create Task
-          </Button>
+          <div className="flex gap-2">
+            <Button onClick={() => setIsCreateModalOpen(true)}>
+              Create Task
+            </Button>
+          <Button onClick={() =>  navigate("/fileupload")}>
+              Upload File
+            </Button>
+          </div>
         </div>
       </div>
 
