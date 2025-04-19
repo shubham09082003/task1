@@ -20,6 +20,9 @@ export default function SignUpPage() {
       if(result.success){
         navigate("/login");
       }
+      if(!result.success){
+        alert(result.error.message);
+      }
     }catch(err){
       console.error("error occured");
     }
@@ -34,7 +37,7 @@ export default function SignUpPage() {
           </h1>
           <p className="text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link to="/login" className="text-primary underline-offset-4 hover:underline">
+            <Link to="/login" className="text-gray-600 underline-offset-4 hover:underline">
               Sign in
             </Link>
           </p>
@@ -49,7 +52,7 @@ export default function SignUpPage() {
               placeholder="name@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full"
+              className="w-full bg-transparent"
             />
           </div>
 
@@ -60,7 +63,7 @@ export default function SignUpPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full"
+              className="w-full bg-transparent"
             />
           </div>
 
@@ -71,7 +74,7 @@ export default function SignUpPage() {
               type="password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full"
+              className="w-full bg-transparent"
             />
           </div>
 
@@ -83,11 +86,11 @@ export default function SignUpPage() {
             />
             <Label htmlFor="terms" className="text-sm font-normal">
               I agree to the{" "}
-              <Link to="/terms" className="text-primary underline-offset-4 hover:underline">
+              <Link to="/terms" className="text-gray-600 underline-offset-4 hover:underline">
                 Terms of Service
               </Link>{" "}
               and{" "}
-              <Link to="/privacy" className="text-primary underline-offset-4 hover:underline">
+              <Link to="/privacy" className="text-gray-600 underline-offset-4 hover:underline">
                 Privacy Policy
               </Link>
             </Label>
@@ -106,7 +109,7 @@ export default function SignUpPage() {
           <Button
             variant="outline"
             type="button"
-            className="w-full"
+            className="w-full bg-transparent"
             onClick={() => {
               // Handle GitHub signup
               console.log("GitHub signup")

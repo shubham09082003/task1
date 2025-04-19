@@ -70,7 +70,7 @@ export default function CreateTodoModal({ isOpen, onClose, onSubmit }: CreateTod
           </div>
         </div>
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>Cancel</Button>
+          <Button variant="outline" className='bg-transparent' onClick={onClose}>Cancel</Button>
           <Button onClick={handleSubmit}>Create Task</Button>
         </DialogFooter>
       </DialogContent>
